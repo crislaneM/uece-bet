@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Compiled Python bytecode
+*.py[cod]
+bet-back/venv
+
 # C extensions
 *.so
 
