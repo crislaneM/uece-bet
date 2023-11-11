@@ -5,6 +5,7 @@ __pycache__/
 
 # Compiled Python bytecode
 *.py[cod]
+venv/
 bet-back/venv
 
 # C extensions
