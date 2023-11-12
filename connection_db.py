@@ -2,7 +2,7 @@ from config.settings import app, db
 from app.controllers.user_controller import user_blueprint
 
 class DatabaseManager:
-    def init(self):
+    def __init__(self):
         self.app = app
         self.db = db
 
