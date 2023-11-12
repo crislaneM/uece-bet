@@ -21,3 +21,5 @@ def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
         body["mensagem"] = mensagem
 
     return Response(json.dumps(body), status=status, mimetype="application/json")
+
+

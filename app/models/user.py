@@ -10,13 +10,13 @@ class Usuario(db.Model):
     nacionalidade = db.Column(db.String(15))
     nascimento = db.Column(db.DateTime)
     tipo_user = db.Column(db.Boolean, default = True) # se True == usuario apostador
-
-   # apostadores = db.relationship("Usuario_apostador", back_populates = "usuarios")
-
+   
+    apostadores = db.relationship("Usuario_apostador", back_populates = "usuarios")
+    apostadores2 = db.relationship("Usuario_adm", back_populates = "usuarios2")
 
     def to_json(self):
         return {"id": self.id, "nome": self.nome, "email": self.email, "cpf" : self.cpf, "nacionalidade" : self.nacionalidade, "nascimento": self.nascimento, "tipo_user": self.tipo_user}
-'''
+
 class Usuario_apostador(db.Model):
     tablename = 'apostadores'
     id = db.Column(db.Integer, primary_key = True)
@@ -31,9 +31,9 @@ class Usuario_adm(db.Model):
     tablename = 'administradores'
     id = db.Column(db.Integer, primary_key = True)
     tipo_user = db.Column(db.Integer, db.ForeignKey(Usuario.id))
-    usuarios = db.relationship("Usuario", back_populates = "administradores")
+    usuarios2 = db.relationship("Usuario", back_populates = "administradores")
     saldo_adm = db.Column(db.Float)
 
     def to_json(self):
         return {"tipo_user": self.tipo_user, "saldo_apostador": self.saldo_adm}
-        '''
+        
