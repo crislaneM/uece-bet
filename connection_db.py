@@ -1,12 +1,7 @@
 from config.settings import app, db
-from app.models.user import *
+from app.controllers.user_controller import user_blueprint
 
-
-# from app.controllers.user_controller import user_blueprint
-
-# app.register_blueprint(user_blueprint)
-
-
+app.register_blueprint(user_blueprint)
 
 try:
     with app.app_context():
@@ -14,3 +9,6 @@ try:
     print("Tabelas criadas com sucesso.")
 except Exception as e:
     print(f"Erro ao criar tabelas: {str(e)}")
+
+if __name__ == '__main__':
+    app.run()

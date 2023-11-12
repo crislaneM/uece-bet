@@ -2,13 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
-user_db = "dev"
+user_db = "postgres"
 password_db = "postgres"
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{user_db}:{password_db}@localhost:5432/uecebet'
-app.app_context()
+# app.app_context()
 db = SQLAlchemy(app)
 
 # class Usuario(db.Model):
