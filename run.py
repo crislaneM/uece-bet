@@ -1,5 +1,4 @@
-from config.settings import app
-from app.controllers.user_controller import *
-
-
+from connection_db import DatabaseManager as App
+app = App()
+app.create_tables()
 app.run()

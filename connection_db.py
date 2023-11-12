@@ -1,14 +1,19 @@
 from config.settings import app, db
 from app.controllers.user_controller import user_blueprint
 
-app.register_blueprint(user_blueprint)
+class DatabaseManager:
+    def init(self):
+        self.app = app
+        self.db = db
 
-try:
-    with app.app_context():
-        db.create_all()
-    print("Tabelas criadas com sucesso.")
-except Exception as e:
-    print(f"Erro ao criar tabelas: {str(e)}")
+    def create_tables(self):
+        self.app.register_blueprint(user_blueprint)
+        try:
+            with self.app.app_context():
+                self.db.create_all()
+            print("Tabelas criadas com sucesso.")
+        except Exception as e:
+            print(f"Erro ao criar tabelas: {str(e)}")
 
-if __name__ == '__main__':
-    app.run()
+    def run(self):
+        return self.app.run()
