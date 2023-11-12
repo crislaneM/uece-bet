@@ -35,7 +35,6 @@ class Usuario_apostador(db.Model):
                 "cpf" : self.cpf,
                 "nacionalidade" : self.nacionalidade,
                 "nascimento": self.nascimento, 
-                "tipo_user": self.tipo_user,
                 "senha": self.senha,
                 "saldo_apostador": self.saldo_apostador}
 
@@ -57,7 +56,6 @@ class Usuario_adm(db.Model):
                 "cpf" : self.cpf,
                 "nacionalidade" : self.nacionalidade,
                 "nascimento": self.nascimento, 
-                "tipo_user": self.tipo_user,
                 "senha": self.senha,
                 "saldo_adm": self.saldo_adm}
         
