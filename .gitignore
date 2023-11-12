@@ -167,3 +167,4 @@ cython_debug/
 # Arquivos
 /teste.sql
 teste.sql
+config/variables.py
