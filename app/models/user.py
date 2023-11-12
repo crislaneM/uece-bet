@@ -8,3 +8,4 @@ class Usuario(db.Model):
 
     def to_json(self):
         return {"id": self.id, "nome": self.nome, "email": self.email}
+    
