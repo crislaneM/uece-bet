@@ -1,11 +1,9 @@
 from flask import Response, jsonify, request
 from flask_restx import Resource, Namespace, fields
 from werkzeug.security import generate_password_hash
-from config.settings import app
 from app.models.user import *
 
 import json
-
 
 user_ns = Namespace("usuario")
 
@@ -63,6 +61,34 @@ class seleciona_usuarios(Resource):
         print(usuarios_json)
         return gera_response(200, "Usuarios", usuarios_json, "ok")
 
+@user_ns.route("/apostadores/<int:id>")
+class deleta_usuario(id):
+    def delete(self):
+        usuario_objeto = Usuario_apostador.query.filter_by(id=id).first()
+        try:
+            db.session.delete(usuario_objeto)
+            db.session.commit()
+            return gera_response(200, "usuario", usuario_objeto.to_json(), "Deletado com sucesso")
+        except Exception as e:
+            print('Erro', e)
+            return gera_response(400, "usuario", {}, "Erro ao deletar")
+    
+# @user_blueprint.route("/apostadores/<int:id>", methods=["PUT"])
+# def atualiza_usuario(id):
+#     usuario_objeto = Usuario_apostador.query.filter_by(id=id).first()
+#     body = request.get_json()
+
+#     try:
+#         if('senha' in body):
+#             usuario_objeto.senha = body['senha']
+        
+#         db.session.add(usuario_objeto)
+#         db.session.commit()
+#         return gera_response(200, "usuario", usuario_objeto.to_json(), "Atualizado com sucesso")
+#     except Exception as e:
+#         print('Erro', e)
+#         return gera_response(400, "usuario", {}, "Erro ao atualizar")
+
 
 def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
     body = {}
@@ -72,5 +98,3 @@ def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
         body["mensagem"] = mensagem
 
     return Response(json.dumps(body), status=status, mimetype="application/json")
-
-
