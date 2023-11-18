@@ -1,12 +1,13 @@
-from config.settings import app, db
-from app.controllers.user_controller import user_blueprint
+from config.settings import app, db, api
+from app.controllers.user_controller import user_ns
 
 class DatabaseManager:
     def __init__(self):
         self.app = app
         self.db = db
-        self.app.register_blueprint(user_blueprint)
-
+        self.api = api
+        self.api.add_namespace(user_ns)
+        
     def create_tables(self):
         try:
             with self.app.app_context():

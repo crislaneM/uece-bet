@@ -24,7 +24,7 @@ class Usuario_apostador(db.Model):
     email = db.Column(db.String(100), unique = True)
     cpf = db.Column(db.String(11), unique = True)
     nacionalidade = db.Column(db.String(15))
-    nascimento = db.Column(db.DateTime)
+    data_nascimento = db.Column(db.DateTime)
     senha = db.Column(db.String(255))
     saldo_apostador = db.Column(db.Float)
 
@@ -46,7 +46,7 @@ class Usuario_adm(db.Model):
     email = db.Column(db.String(100), unique = True)
     cpf = db.Column(db.String(11), unique = True)
     nacionalidade = db.Column(db.String(15))
-    nascimento = db.Column(db.DateTime)
+    data_nascimento = db.Column(db.DateTime)
     senha = db.Column(db.String(255))
     saldo_adm = db.Column(db.Float)
 

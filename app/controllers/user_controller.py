@@ -1,67 +1,67 @@
-from flask import Blueprint, Response, jsonify, request
+from flask import Response, jsonify, request
+from flask_restx import Resource, Namespace, fields
 from werkzeug.security import generate_password_hash
 from config.settings import app
 from app.models.user import *
+
 import json
 
-user_blueprint = Blueprint('usuario', __name__)
 
-@user_blueprint.route("/cadastrar", methods=["POST"])
-def cria_usuario():
-    try:
-        body = request.get_json()
+user_ns = Namespace("usuario")
 
-        if Usuario_apostador.query.filter_by(email=body['email']).first():
-            return {
-                "status": "error",
-                "mensagem": "Email já cadastrado. Escolha outro email."
-            }, 400
+user_model = user_ns.model('User', {
+    'nome': fields.String(required=True, description='Nome de usuário'),
+    'data_nascimento': fields.String(required=True, description='Data de nascimento do usuário'),
+    'cpf': fields.String(required=True, description='Cpf do usuário'),
+    'nacionalidade': fields.String(required=True, description='Nacionalidade do usuário'),
+    'saldo_apostado': fields.String(required=True, description='Saldo inicial do usuário'),
+    'email': fields.String(required=True, description='Endereço de e-mail'),
+    'senha': fields.String(required=True, description='Senha'),   
+})
 
-        if Usuario_apostador.query.filter_by(cpf=body['cpf']).first():
-            return {
-                "status": "error",
-                "mensagem": "Cpf já cadastrado. Escolha outro cpf."
-            }, 400
+@user_ns.route("/cadastrar")
+class userRegister(Resource):
 
-        senha_hash = generate_password_hash(body['senha'], method='pbkdf2:sha256')
+    @user_ns.doc(responses={201: 'Recurso criado com sucesso', 400: 'Erro nos dados de entrada'})
+    @user_ns.expect(user_model, validate=True)
+    def post(self):
+        try:
+            user_data = user_ns.payload
 
-        novo_apostador = Usuario_apostador(
-            nome=body['nome'],
-            nascimento=body['nascimento'],
-            cpf=body['cpf'],
-            nacionalidade=body["nacionalidade"],
-            saldo_apostador=200,
-            email=body['email'],
-            senha=senha_hash
-        )
+            if Usuario_apostador.query.filter_by(email=user_data['Email']).first():
+                return {"status": "error", "mensagem": "Email já cadastrado. Escolha outro email."}, 400
 
-        db.session.add(novo_apostador)
-        db.session.commit()
+            if Usuario_apostador.query.filter_by(cpf=user_data['Cpf']).first():
+                return {"status": "error", "mensagem": "Cpf já cadastrado. Escolha outro cpf."}, 400
 
-        return {
-            "status": "success",
-            "mensagem": "Usuário criado com sucesso",
-        }, 201
+            novo_apostador = Usuario_apostador(
+                nome=user_data['nome'],
+                nascimento=user_data['nata_nascimento'],
+                cpf=user_data['cpf'],
+                nacionalidade=user_data['nacionalidade'],
+                saldo_apostador=user_data['saldo_apostado'],
+                email=user_data['email'],
+                senha=generate_password_hash(user_data['senha'], method='pbkdf2:sha256')
+            )
 
-    except KeyError as e:
-        return {
-            "status": "error",
-            "mensagem": f"Campo obrigatório ausente: {str(e)}"
-        }, 400
+            db.session.add(novo_apostador)
+            db.session.commit()
 
-    except Exception as e:
-        return {
-            "status": "error",
-            "mensagem": f"Erro ao cadastrar usuário: {str(e)}"
-        }, 500
+            return {"status": "success", "mensagem": "Usuário criado com sucesso"}, 201
 
-#mudado para usuario_adm (nao existe mais apenas usuario)
-@user_blueprint.route("/usuarios", methods=["GET"])
-def seleciona_usuarios():
-    usuarios_objetos = Usuario_adm.query.all()
-    usuarios_json = [usuario.to_json() for usuario in usuarios_objetos]
-    print(usuarios_json)
-    return gera_response(200, "Usuarios", usuarios_json, "ok")
+        except ValidationError as e:
+            return {"status": "error", "mensagem": f"Erro nos dados de entrada: {str(e.messages)}"}, 400
+
+        except Exception as e:
+            return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
+        
+@user_ns.route("/usuarios")
+class seleciona_usuarios(Resource):
+    def get(self):
+        usuarios_objetos = Usuario_adm.query.all()
+        usuarios_json = [usuario.to_json() for usuario in usuarios_objetos]
+        print(usuarios_json)
+        return gera_response(200, "Usuarios", usuarios_json, "ok")
 
 
 def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
