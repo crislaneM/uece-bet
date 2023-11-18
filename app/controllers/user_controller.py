@@ -98,3 +98,20 @@ def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
         body["mensagem"] = mensagem
 
     return Response(json.dumps(body), status=status, mimetype="application/json")
+
+@user_ns.route("/apostadores/<int:id>")
+class atualizar_usuario(Resource):
+    def update(self,id):
+        body = request.get_json()
+        usuario_obj = Usuario_apostador.query.filter_by(id=id).first()
+        try:
+            if('senha' in body):
+                usuario_obj.senha = body['senha']
+            db.session.commit()
+            return gera_response(200, "usuario", usuario_obj.to_json() ,"senha atualizada" )
+        except Exception as error:
+            return gera_response(200, "usuario", usuario_obj.to_json(), f"erro ao mudar senha: {error}")
+    
+
+        
+
