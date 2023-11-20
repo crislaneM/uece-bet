@@ -2,7 +2,7 @@ from config.settings import db
 
 class Usuario_apostador(db.Model):
     __tablename__ = 'apostadores'
-    id = db.Column(db.Integer, primary_key= True, )
+    id = db.Column(db.Integer, primary_key= True, autoincrement=True )
     nome = db.Column(db.String(50))
     email = db.Column(db.String(100), unique = True)
     cpf = db.Column(db.String(11), unique = True)
@@ -23,7 +23,7 @@ class Usuario_apostador(db.Model):
 
 class Usuario_adm(db.Model):
     __tablename__ = 'administrador'
-    id = db.Column(db.Integer, primary_key= True)
+    id = db.Column(db.Integer, primary_key= True, autoincrement=True)
     nome = db.Column(db.String(50))
     email = db.Column(db.String(100), unique = True)
     cpf = db.Column(db.String(11), unique = True)

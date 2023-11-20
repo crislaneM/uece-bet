@@ -6,7 +6,7 @@ class DatabaseManager:
         self.app = app
         self.db = db
         self.api = api
-        self.api.add_namespace(user_ns, path='/apostadores')
+        self.api.add_namespace(user_ns, path='/usuario')
         
     def create_tables(self):
         try:

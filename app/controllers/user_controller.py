@@ -2,26 +2,17 @@ from flask import Response,jsonify, request
 from flask_restx import Resource, Namespace, fields
 from werkzeug.security import generate_password_hash
 from app.models.user import *
+from app.schemas.user_schemas import user_register_model, user_model, adm_model, update_pwd_user
 
 import json
 
-user_ns = Namespace("usuario")
+user_ns = Namespace("Usuários")
 
-user_model = user_ns.model('User Register', {
-    'nome': fields.String(required=True, description='Nome de usuário'),
-    'nascimento': fields.String(required=True, description='Nascimento do usuário'),
-    'cpf': fields.String(required=True, description='Cpf do usuário'),
-    'nacionalidade': fields.String(required=True, description='Nacionalidade do usuário'),
-    'saldo_apostado': fields.String(required=False, description='Saldo inicial do usuário'),
-    'email': fields.String(required=True, description='Endereço de e-mail'),
-    'senha': fields.String(required=True, description='Senha'),   
-})
-
-@user_ns.route("/cadastrar")
+@user_ns.route("/registro")
 class userRegister(Resource):
 
     @user_ns.doc(responses={201: 'Recurso criado com sucesso', 400: 'Erro nos dados de entrada'})
-    @user_ns.expect(user_model, validate=True)
+    @user_ns.expect(user_register_model, validate=True)
     def post(self):
         try:
             user_data = user_ns.payload
@@ -47,51 +38,55 @@ class userRegister(Resource):
 
             return {"status": "success", "mensagem": "Usuário criado com sucesso"}, 201
 
-        except ValidationError as e:
-            return {"status": "error", "mensagem": f"Erro nos dados de entrada: {str(e.messages)}"}, 400
-
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
+      
+@user_ns.route("/apostador/todosusuarios")
+class allUserGumbler(Resource):
 
-def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
-    body = {}
-    body[nome_do_conteudo] = conteudo
+    @user_ns.marshal_list_with(user_model)
+    def get(self):
+        return Usuario_apostador.query.all()
 
-    if(mensagem):
-        body["mensagem"] = mensagem
+@user_ns.route("/adm/todosusuarios")
+class allUserAdm(Resource):
 
-    return Response(json.dumps(body), status=status, mimetype="application/json")        
-# @user_ns.route("/todosusuarios")
-# class allUser(Resource):
-#     def get(self):
-#         usuarios_objetos = Usuario_apostador.query.all()
-#         usuarios_json = [usuario.to_json() for usuario in usuarios_objetos]
-#         print(usuarios_json)
-#         # return gera_response(200, "Usuarios", usuarios_json, "ok")
-#         return True
+    @user_ns.marshal_list_with(adm_model)
+    def get(self):
+        return Usuario_adm.query.all()
+
 @user_ns.route("/<int:id>")
 class userOperations(Resource):
+
+    @user_ns.marshal_with(user_model)
     def delete(self,id):
         usuario_objeto = Usuario_apostador.query.filter_by(id=id).first()
+        
         try:
             db.session.delete(usuario_objeto)
             db.session.commit()
-            return gera_response(200, "usuario", usuario_objeto.to_json(), "Deletado com sucesso")
+            return usuario_objeto, 201
+
         except Exception as e:
-            print('Erro', e)
-            return gera_response(400, "usuario", {}, "Erro ao deletar")    
+            return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
+        
     
-    def put(self,id):
-        body = request.get_json()
+    @user_ns.expect(update_pwd_user)
+    @user_ns.marshal_with(user_model)
+    def put(self, id):
+        body = user_ns.payload
         usuario_obj = Usuario_apostador.query.filter_by(id=id).first()
 
         try:
             if('senha' in body):
-                usuario_obj.senha = body['senha']
+                usuario_obj.senha = generate_password_hash(body['senha'], method='pbkdf2:sha256')
+
             db.session.commit()
-            return gera_response(200, "usuario", usuario_obj.to_json() ,"senha atualizada" )
-        except Exception as error:
-            return gera_response(200, "usuario", usuario_obj.to_json(), f"erro ao mudar senha: {error}")
+            
+            return usuario_obj, 201
+
+        except Exception as e:
+            return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
         
     
 
