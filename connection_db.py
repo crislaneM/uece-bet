@@ -1,10 +1,11 @@
-from config.settings import app, db, api
+from config.settings import app, db, api, jwt
 from app.controllers.user_controller import user_ns
 
 class DatabaseManager:
     def __init__(self):
         self.app = app
         self.db = db
+        self.jwt = jwt
         self.api = api
         self.api.add_namespace(user_ns, path='/usuario')
         

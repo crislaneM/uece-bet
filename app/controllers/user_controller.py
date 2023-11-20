@@ -1,8 +1,9 @@
 from flask import Response,jsonify, request
-from flask_restx import Resource, Namespace, fields
-from werkzeug.security import generate_password_hash
+from flask_restx import Resource, Namespace
+from flask_jwt_extended import create_access_token, create_refresh_token
+from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.user import *
-from app.schemas.user_schemas import user_register_model, user_model, adm_model, update_pwd_user
+from app.schemas.user_schemas import user_register_model, user_model, adm_model, update_pwd_user, login_users
 
 import json
 
@@ -68,9 +69,8 @@ class userOperations(Resource):
             return usuario_objeto, 201
 
         except Exception as e:
-            return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
+            return {"status": "error", "mensagem": f"Erro ao deletar usuário: {str(e)}"}, 500
         
-    
     @user_ns.expect(update_pwd_user)
     @user_ns.marshal_with(user_model)
     def put(self, id):
@@ -86,9 +86,43 @@ class userOperations(Resource):
             return usuario_obj, 201
 
         except Exception as e:
-            return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
+            return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
         
+@user_ns.route('/login')
+class createLogin(Resource):
     
+    @user_ns.expect(login_users, validate=True)
+    def post(self):
+
+        body_login = user_ns.payload
+        
+        if not body_login:
+            return {'message': 'Nenhum dado JSON encontrado na solicitação'}, 400
+
+        try: 
+            user_apostador = Usuario_apostador.query.filter_by(email=body_login['email']).first()
+
+            if user_apostador:    
+
+                check_password = check_password_hash(user_apostador.senha, body_login['senha'])
+                
+                if user_apostador.email and check_password:
+                    access_token = create_access_token(identity=user_apostador.id)
+                    refresh_token = create_refresh_token(identity=user_apostador.id)
+
+                    return  {   
+                                "message" : "Logged In",
+                                "tokens":{
+                                    "access": access_token,
+                                    "refresh": refresh_token
+                            }    
+                        },200
+
+            return {"error": "Invalid username or password"}
+
+        except Exception as e:
+            return {"status": "error", "mensagem": f"Erro ao realizar o login do usuário: {str(e)}"}, 500
+
 
         
 

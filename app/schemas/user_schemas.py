@@ -6,7 +6,6 @@ user_register_model = api.model('Registro de usuário', {
     'nascimento': fields.String(required=True, description='Nascimento do usuário'),
     'cpf': fields.String(required=True, description='Cpf do usuário'),
     'nacionalidade': fields.String(required=True, description='Nacionalidade do usuário'),
-    'saldo_apostado': fields.String(required=False, description='Saldo inicial do usuário'),
     'email': fields.String(required=True, description='Endereço de e-mail'),
     'senha': fields.String(required=True, description='Senha'),   
 })
@@ -27,3 +26,7 @@ update_pwd_user= api.model('Atualizar senha apostador',{
     'senha': fields.String(required=True),
 })
 
+login_users= api.model('Login de todos usuários',{
+    'email': fields.String(required=True),
+    'senha': fields.String(required=True)
+})
