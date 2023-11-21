@@ -95,34 +95,50 @@ class createLogin(Resource):
     def post(self):
 
         body_login = user_ns.payload
+
+        user = Usuario_apostador.query.filter_by(email=body_login['email']).first()
+        user_adm = Usuario_adm.query.filter_by(email=body_login['email']).first()
         
-        if not body_login:
-            return {'message': 'Nenhum dado JSON encontrado na solicitação'}, 400
-
-        try: 
-            user_apostador = Usuario_apostador.query.filter_by(email=body_login['email']).first()
-
-            if user_apostador:    
-
-                check_password = check_password_hash(user_apostador.senha, body_login['senha'])
+        if user != None:
+            print('apostador')
+            check_password = check_password_hash(user.senha, body_login['senha'])
                 
-                if user_apostador.email and check_password:
-                    access_token = create_access_token(identity=user_apostador.id)
-                    refresh_token = create_refresh_token(identity=user_apostador.id)
+            if user.email and check_password:
+                access_token = create_access_token(identity=user.id)
+                refresh_token = create_refresh_token(identity=user.id)
 
-                    return  {   
-                                "message" : "Logged In",
-                                "tokens":{
-                                    "access": access_token,
-                                    "refresh": refresh_token
-                            }    
-                        },200
+                return  {   
+                            "message" : "Logged In",
+                            "tokens":{
+                                "access": access_token,
+                                "refresh": refresh_token
+                        }    
+                    },200  
+            
+        elif user_adm != None: 
+            print('administrador')
 
-            return {"error": "Invalid username or password"}
+            if user_adm.senha != body_login['senha']:
+                return {"error": "Email e senha inválidos"}
+            
+            check_password = user_adm.senha    
 
-        except Exception as e:
-            return {"status": "error", "mensagem": f"Erro ao realizar o login do usuário: {str(e)}"}, 500
+            if user_adm.email and check_password:
+                access_token = create_access_token(identity=user_adm.id)
+                refresh_token = create_refresh_token(identity=user_adm.id)
 
+                return  {   
+                            "message" : "Logged In",
+                            "tokens":{
+                                "access": access_token,
+                                "refresh": refresh_token
+                        }    
+                    },200    
+        
+        return {"error": "Email e senha inválidos"}
+        
+            
+        
 
         
 
