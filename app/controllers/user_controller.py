@@ -100,7 +100,7 @@ class createLogin(Resource):
         user_adm = Usuario_adm.query.filter_by(email=body_login['email']).first()
         
         if user != None:
-            print('apostador')
+        
             check_password = check_password_hash(user.senha, body_login['senha'])
                 
             if user.email and check_password:
@@ -116,7 +116,6 @@ class createLogin(Resource):
                     },200  
             
         elif user_adm != None: 
-            print('administrador')
 
             if user_adm.senha != body_login['senha']:
                 return {"error": "Email e senha inválidos"}
@@ -136,9 +135,7 @@ class createLogin(Resource):
                     },200    
         
         return {"error": "Email e senha inválidos"}
-        
-            
-        
+
 
         
 
