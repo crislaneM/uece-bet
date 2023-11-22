@@ -18,20 +18,21 @@ class userRegister(Resource):
         try:
             user_data = user_ns.payload
 
-            if Usuario_apostador.query.filter_by(email=user_data['email']).first():
+            if Usuarios.query.filter_by(email=user_data['email']).first():
                 return {"status": "error", "mensagem": "Email já cadastrado. Escolha outro email."}, 400
 
-            if Usuario_apostador.query.filter_by(cpf=user_data['cpf']).first():
+            if Usuarios.query.filter_by(cpf=user_data['cpf']).first():
                 return {"status": "error", "mensagem": "Cpf já cadastrado. Escolha outro cpf."}, 400
 
-            novo_apostador = Usuario_apostador(
+            novo_apostador = Usuarios(
                 nome=user_data['nome'],
                 nascimento=user_data['nascimento'],
                 cpf=user_data['cpf'],
                 nacionalidade=user_data['nacionalidade'],
-                saldo_apostador=200,
+                saldo=20,
                 email=user_data['email'],
-                senha=generate_password_hash(user_data['senha'], method='pbkdf2:sha256')
+                senha=generate_password_hash(user_data['senha'], method='pbkdf2:sha256'),
+                tipo_usuario=user_data['tipo_usuario']
             )
 
             db.session.add(novo_apostador)
@@ -47,21 +48,21 @@ class allUserGumbler(Resource):
 
     @user_ns.marshal_list_with(user_model)
     def get(self):
-        return Usuario_apostador.query.all()
+        return Usuarios.query.filter_by(tipo_usuario=0).first()
 
 @user_ns.route("/adm/todosusuarios")
 class allUserAdm(Resource):
 
     @user_ns.marshal_list_with(adm_model)
     def get(self):
-        return Usuario_adm.query.all()
+        return Usuarios.query.filter_by(tipo_usuario=1).first()
 
 @user_ns.route("/<int:id>")
 class userOperations(Resource):
 
     @user_ns.marshal_with(user_model)
     def delete(self,id):
-        usuario_objeto = Usuario_apostador.query.filter_by(id=id).first()
+        usuario_objeto = Usuarios.query.filter_by(id=id).first()
         
         try:
             db.session.delete(usuario_objeto)
@@ -75,7 +76,7 @@ class userOperations(Resource):
     @user_ns.marshal_with(user_model)
     def put(self, id):
         body = user_ns.payload
-        usuario_obj = Usuario_apostador.query.filter_by(id=id).first()
+        usuario_obj = Usuarios.query.filter_by(id=id).first()
 
         try:
             if('senha' in body):
@@ -88,53 +89,53 @@ class userOperations(Resource):
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
         
-@user_ns.route('/login')
-class createLogin(Resource):
+# @user_ns.route('/login')
+# class createLogin(Resource):
     
-    @user_ns.expect(login_users, validate=True)
-    def post(self):
+#     @user_ns.expect(login_users, validate=True)
+#     def post(self):
 
-        body_login = user_ns.payload
+#         body_login = user_ns.payload
 
-        user = Usuario_apostador.query.filter_by(email=body_login['email']).first()
-        user_adm = Usuario_adm.query.filter_by(email=body_login['email']).first()
+#         user = Usuarios.query.filter_by(email=body_login['email']).first()
+#         user_adm = Usuario_adm.query.filter_by(email=body_login['email']).first()
         
-        if user != None:
+#         if user != None:
         
-            check_password = check_password_hash(user.senha, body_login['senha'])
+#             check_password = check_password_hash(user.senha, body_login['senha'])
                 
-            if user.email and check_password:
-                access_token = create_access_token(identity=user.id)
-                refresh_token = create_refresh_token(identity=user.id)
+#             if user.email and check_password:
+#                 access_token = create_access_token(identity=user.id)
+#                 refresh_token = create_refresh_token(identity=user.id)
 
-                return  {   
-                            "message" : "Logged In",
-                            "tokens":{
-                                "access": access_token,
-                                "refresh": refresh_token
-                        }    
-                    },200  
+#                 return  {   
+#                             "message" : "Logged In",
+#                             "tokens":{
+#                                 "access": access_token,
+#                                 "refresh": refresh_token
+#                         }    
+#                     },200  
             
-        elif user_adm != None: 
+#         elif user_adm != None: 
 
-            if user_adm.senha != body_login['senha']:
-                return {"error": "Email e senha inválidos"}
+#             if user_adm.senha != body_login['senha']:
+#                 return {"error": "Email e senha inválidos"}
             
-            check_password = user_adm.senha    
+#             check_password = user_adm.senha    
 
-            if user_adm.email and check_password:
-                access_token = create_access_token(identity=user_adm.id)
-                refresh_token = create_refresh_token(identity=user_adm.id)
+#             if user_adm.email and check_password:
+#                 access_token = create_access_token(identity=user_adm.id)
+#                 refresh_token = create_refresh_token(identity=user_adm.id)
 
-                return  {   
-                            "message" : "Logged In",
-                            "tokens":{
-                                "access": access_token,
-                                "refresh": refresh_token
-                        }    
-                    },200    
+#                 return  {   
+#                             "message" : "Logged In",
+#                             "tokens":{
+#                                 "access": access_token,
+#                                 "refresh": refresh_token
+#                         }    
+#                     },200    
         
-        return {"error": "Email e senha inválidos"}
+#         return {"error": "Email e senha inválidos"}
 
 
         

@@ -8,6 +8,7 @@ user_register_model = api.model('Registro de usuário', {
     'nacionalidade': fields.String(required=True, description='Nacionalidade do usuário'),
     'email': fields.String(required=True, description='Endereço de e-mail'),
     'senha': fields.String(required=True, description='Senha'),   
+    'tipo_usuario':fields.Integer(required=True, description='Tipo do usuário')
 })
 
 user_model = api.model('Usuários apostadores',{
