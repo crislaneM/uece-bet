@@ -1,44 +1,37 @@
 from config.settings import db
 
-class Usuario_apostador(db.Model):
-    __tablename__ = 'apostadores'
-    id = db.Column(db.Integer, primary_key= True, autoincrement=True )
-    nome = db.Column(db.String(50))
+class Usuarios(db.Model):
+    __tablename__ = 'usuarios'
+    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique = True)
-    cpf = db.Column(db.String(11), unique = True)
-    nacionalidade = db.Column(db.String(15))
-    nascimento = db.Column(db.DateTime)
-    senha = db.Column(db.String(255))
-    saldo_apostador = db.Column(db.Float)
+    nome = db.Column(db.String(50), nullable=False)
+    tipo_usuario = db.Column(db.Boolean, nullable=False)
+    cpf = db.Column(db.String(11), unique = True, nullable = False)
+    nacionalidade = db.Column(db.String(50))
+    nascimento = db.Column(db.Date)
+    saldo = db.Column(db.Float)
+    senha = db.Column(db.String(50), nullable = False)
+    #relacao
+    eventos = db.relationship('Eventos', back_populates='usuario', uselist=False)
+    
+   
+class Eventos(db.Model):
+    __tablename__ = 'eventos'
+    id = db.Column(db.Integer, primary_key=True)
+    time_1 = db.Column(db.String, db.ForeignKey('times.nome'))
+    time_2 = db.Column(db.String, db.ForeignKey('times.nome'))
+    odd_time1 = db.Column(db.Float, nullable=False)
+    odd_time2 = db.Column(db.Float, nullable=False)
+    odd_empate = db.Column(db.Float, nullable=False)
+    id_adm = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    #relacao
+    usuario = db.relationship('Usuarios', back_populates='eventos')
+    times = db.relationship('Times', back_populates='eventos')
 
-    def to_json(self):
-        return {"id": self.id, 
-                "nome": self.nome, 
-                "email": self.email, 
-                "cpf" : self.cpf,
-                "nacionalidade" : self.nacionalidade,
-                "nascimento": self.nascimento, 
-                "senha": self.senha,
-                "saldo_apostador": self.saldo_apostador}
-
-class Usuario_adm(db.Model):
-    __tablename__ = 'administrador'
-    id = db.Column(db.Integer, primary_key= True, autoincrement=True)
-    nome = db.Column(db.String(50))
-    email = db.Column(db.String(100), unique = True)
-    cpf = db.Column(db.String(11), unique = True)
-    nacionalidade = db.Column(db.String(15))
-    nascimento = db.Column(db.DateTime)
-    senha = db.Column(db.String(255))
-    saldo_adm = db.Column(db.Float)
-
-    def to_json(self):
-        return {"id": self.id, 
-                "nome": self.nome, 
-                "email": self.email, 
-                "cpf" : self.cpf,
-                "nacionalidade" : self.nacionalidade,
-                "nascimento": self.nascimento, 
-                "senha": self.senha,
-                "saldo_adm": self.saldo_adm}
-        
+class Times(db.Model):
+    __tablename__ = 'times'
+    nome = db.Column(db.String(30), primary_key = True)
+    modalidade = db.Column(db.String(20))
+    #relacao
+    eventos = db.relationship('Eventos', back_populates = 'times')
+    
