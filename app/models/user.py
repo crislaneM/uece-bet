@@ -14,7 +14,7 @@ class Usuarios(db.Model):
     #relacao
     eventos = db.relationship('Eventos', back_populates='usuario', uselist=False)
     
-   
+    
 class Eventos(db.Model):
     __tablename__ = 'eventos'
     id = db.Column(db.Integer, primary_key=True)
