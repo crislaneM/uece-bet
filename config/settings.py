@@ -1,3 +1,4 @@
+from datetime import timedelta
 from flask import Flask
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -8,9 +9,11 @@ user = ConfigBancoDados.user_db
 password = ConfigBancoDados.password_db
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{user}:{password}@localhost:5432/uecebet'
-app.config['SECRET_KEY']='thisissecret'
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+app.config["SQLALCHEMY_DATABASE_URI"] = f'postgresql://{user}:{password}@localhost:5432/uecebet'
+app.config["JWT_SECRET_KEY"] = 'Thisissecret'
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=1)
 
 api = Api()
 api.init_app(app)

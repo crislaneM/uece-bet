@@ -14,13 +14,8 @@ user_register_model = api.model('Registro de usuário', {
 user_model = api.model('Usuários apostadores',{
     'id':fields.Integer,
     'nome':fields.String,
-    'saldo_apostador':fields.Float
-})
-
-adm_model = api.model('Usuários administradores',{
-    'id':fields.Integer,
-    'nome':fields.String,
-    'saldo_adm':fields.Float
+    'tipo_usuario':fields.Integer,
+    'saldo':fields.Float
 })
 
 update_pwd_user= api.model('Atualizar senha apostador',{
