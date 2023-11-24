@@ -3,11 +3,12 @@ from flask_restx import Resource, Namespace
 from flask_jwt_extended import create_access_token, create_refresh_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.user import *
-from app.schemas.user_schemas import user_register_model, user_model, adm_model, update_pwd_user, login_users
+from app.schemas.user_schemas import *
 
 import json
 
 user_ns = Namespace("Usuários")
+user_ev = Namespace("Eventos")
 
 @user_ns.route("/registro")
 class userRegister(Resource):
@@ -138,5 +139,29 @@ class userOperations(Resource):
 #         return {"error": "Email e senha inválidos"}
 
 
-        
+      
+@user_ev.route("/cadastrar")
+class admEvent(Resource):
 
+    @user_ev.doc(responses={201: 'Recurso criado com sucesso', 400: 'Erro nos dados de entrada'})
+    @user_ev.expect(create_event, validate=True)
+    def post(self):
+        try:
+            user_data = user_ev.payload
+            novo_evento = Eventos(
+                id_adm=user_data['id_adm'],
+                time_1=user_data['time_1'],
+                time_2=user_data['time_1'],
+                odd_time1=user_data['odd_time1'],
+                odd_time2=user_data['odd_time2'],
+                odd_empate=user_data['odd_empate'],
+                data=user_data['data'],
+                descricao=user_data['descricao'])
+
+            db.session.add(novo_evento)
+            db.session.commit()
+
+            return {"status": "success", "mensagem": "Usuário criado com sucesso"}, 201
+
+        except Exception as e:
+            return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
