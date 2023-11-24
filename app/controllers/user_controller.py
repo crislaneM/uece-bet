@@ -1,12 +1,9 @@
-from flask import jsonify
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.models.user import *
-from app.schemas.user_schemas import user_register_model, user_model, update_pwd_user, login_users
-# from app.authorization import jwt_required
-
+from app.schemas.user_schemas import *
 
 user_ns = Namespace("Usuários")
 
@@ -127,5 +124,3 @@ class createProtected(Resource):
         current_user = get_jwt_identity()
 
         return Usuarios.query.filter_by(id=current_user).first()
-        
-
