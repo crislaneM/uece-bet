@@ -2,12 +2,12 @@ from flask_restx import Resource, Namespace
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.models.user import *
+from app.models.models_db import *
 from app.schemas.user_schemas import *
 
 user_ns = Namespace("Usuários")
-
-@user_ns.route("/registro")
+event_ns = Namespace("Eventos")
+@user_ns.route("/cadastrar")
 class userRegister(Resource):
 
     @user_ns.doc(responses={201: 'Recurso criado com sucesso', 400: 'Erro nos dados de entrada'})
@@ -115,7 +115,7 @@ class createLogin(Resource):
         
         return {"error": "Email e senha inválidos"}
 
-@user_ns.route('/protected')
+@user_ns.route('/protegido')
 class createProtected(Resource):
 
     @user_ns.marshal_with(user_model)

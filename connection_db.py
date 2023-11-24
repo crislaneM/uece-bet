@@ -2,7 +2,6 @@ from config.settings import app, db, api, jwt
 from app.controllers.user_controller import user_ns
 from app.controllers.events_controller import events_ns
 
-
 class DatabaseManager:
     def __init__(self):
         self.app = app

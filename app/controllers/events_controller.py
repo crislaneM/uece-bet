@@ -1,6 +1,6 @@
 from flask_restx import Resource, Namespace
 
-from app.models.user import *
+from app.models.models_db import *
 from app.schemas.events_schemas import *
 
 events_ns = Namespace("Eventos")
@@ -30,3 +30,24 @@ class admEvent(Resource):
 
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
+        
+@events_ns.route("/<int:id>")
+class eventOperation(Resource):
+    @events_ns.expect(update_event)
+    @events_ns.marshal_with(update_event)
+    def put(self, id):
+        body = events_ns.payload
+        event_obj = Eventos.query.filter_by(id=id).first()
+
+        try:
+            if ('odd_time1' in body): event_obj.odd_time1 = body['odd_time1']
+            if ('odd_time2' in body): event_obj.odd_time2 = body['odd_time2']
+            if ('odd_empate' in body): event_obj.odd_empate = body['odd_empate']
+            if ('descricao' in body): event_obj.descricao = body['descricao']
+
+            db.session.commit()
+            
+            return event_obj, 201
+
+        except Exception as e:
+            return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
