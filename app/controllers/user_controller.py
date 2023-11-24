@@ -3,11 +3,33 @@ from flask_restx import Resource, Namespace
 from flask_jwt_extended import create_access_token, create_refresh_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.user import *
-from app.schemas.user_schemas import user_register_model, user_model, adm_model, update_pwd_user, login_users
-
+from app.schemas.user_schemas import *
 import json
 
 user_ns = Namespace("Usuários")
+event_ns = Namespace("Eventos")
+
+@event_ns.route("/<int:id>")
+class eventOperation(Resource):
+    @event_ns.expect(update_event)
+    @event_ns.marshal_with(update_event)
+    def put(self, id):
+        body = event_ns.payload
+        event_obj = Eventos.query.filter_by(id=id).first()
+
+        try:
+            if ('odd_time1' in body): event_obj.odd_time1 = body['odd_time1']
+            if ('odd_time2' in body): event_obj.odd_time2 = body['odd_time2']
+            if ('odd_empate' in body): event_obj.odd_empate = body['odd_empate']
+            if ('descricao' in body): event_obj.descricao = body['descricao']
+
+            db.session.commit()
+            
+            return event_obj, 201
+
+        except Exception as e:
+            return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
+
 
 @user_ns.route("/registro")
 class userRegister(Resource):
@@ -88,7 +110,11 @@ class userOperations(Resource):
 
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
-        
+
+
+
+
+
 # @user_ns.route('/login')
 # class createLogin(Resource):
     

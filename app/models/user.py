@@ -23,6 +23,8 @@ class Eventos(db.Model):
     odd_time1 = db.Column(db.Float, nullable=False)
     odd_time2 = db.Column(db.Float, nullable=False)
     odd_empate = db.Column(db.Float, nullable=False)
+    data = db.Column(db.DateTime, nullable=False)
+    descricao = db.Column(db.Text)
     id_adm = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     #relacao
     usuario = db.relationship('Usuarios', back_populates='eventos')

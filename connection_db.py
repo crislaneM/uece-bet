@@ -1,5 +1,5 @@
 from config.settings import app, db, api, jwt
-from app.controllers.user_controller import user_ns
+from app.controllers.user_controller import user_ns, event_ns
 
 class DatabaseManager:
     def __init__(self):
@@ -8,6 +8,7 @@ class DatabaseManager:
         self.jwt = jwt
         self.api = api
         self.api.add_namespace(user_ns, path='/usuario')
+        self.api.add_namespace(event_ns, path='/evento')
         
     def create_tables(self):
         try:
