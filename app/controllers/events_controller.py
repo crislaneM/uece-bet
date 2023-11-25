@@ -51,7 +51,8 @@ class eventOperation(Resource):
 
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
-        
+
+# Aparece pra apostador e administrador     
 @events_ns.route("/<int:id>")
 class listEvents(Resource):
     @events_ns.marshal_list_with(list_event)
