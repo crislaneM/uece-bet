@@ -31,7 +31,7 @@ class admEvent(Resource):
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
         
-@events_ns.route("/<int:id>")
+@events_ns.route("/atualizar/<int:id>")
 class eventOperation(Resource):
     @events_ns.expect(update_event)
     @events_ns.marshal_with(update_event)
