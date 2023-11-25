@@ -1,16 +1,27 @@
 from flask_restx import Resource, Namespace
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import abort
 from app.models.models_db import *
 from app.schemas.events_schemas import *
+
+def verificar_permissao_admin(error):
+    user_id = get_jwt_identity()
+    user = Usuarios.query.get(user_id)
+    if user.tipo_usuario == 0:
+        abort(403, {"ERRO": f'{error}'})
+
+user_nao_adm = "Permissão negada: O usuário não é administrador"
 
 events_ns = Namespace("Eventos")
 
 @events_ns.route("/cadastrar")
-class admEvent(Resource):
 
+class admEvent(Resource):
     @events_ns.doc(responses={201: 'Recurso criado com sucesso', 400: 'Erro nos dados de entrada'})
     @events_ns.expect(create_event, validate=True)
+    @jwt_required()
     def post(self):
+        verificar_permissao_admin(user_nao_adm)
         try:
             user_data = events_ns.payload
             novo_evento = Eventos(
@@ -34,11 +45,11 @@ class admEvent(Resource):
 @events_ns.route("/atualizar/<int:id>")
 class eventOperation(Resource):
     @events_ns.expect(update_event)
-    @events_ns.marshal_with(update_event)
+    @jwt_required()
     def put(self, id):
+        verificar_permissao_admin(user_nao_adm)
         body = events_ns.payload
         event_obj = Eventos.query.filter_by(id=id).first()
-
         try:
             if ('odd_time1' in body): event_obj.odd_time1 = body['odd_time1']
             if ('odd_time2' in body): event_obj.odd_time2 = body['odd_time2']
@@ -47,12 +58,16 @@ class eventOperation(Resource):
 
             db.session.commit()
             
-            return event_obj, 201
+            response_data = {
+                "msg": "Evento atualizado com sucesso.",
+                "atualizações": events_ns.marshal(event_obj, update_event)
+            }
 
+            return response_data, 201
+    
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
-
-# Aparece pra apostador e administrador     
+      
 @events_ns.route("/<int:id>")
 class listEvents(Resource):
     @events_ns.marshal_list_with(list_event)
