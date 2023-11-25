@@ -46,14 +46,14 @@ class allUserGumbler(Resource):
 
     @user_ns.marshal_list_with(user_model)
     def get(self):
-        return Usuarios.query.filter_by(tipo_usuario=0).first()
+        return Usuarios.query.filter_by(tipo_usuario=0).all()
 
 @user_ns.route("/adm/todosusuarios")
 class allUserAdm(Resource):
 
     @user_ns.marshal_list_with(user_model)
     def get(self):
-        return Usuarios.query.filter_by(tipo_usuario=1).first()
+        return Usuarios.query.filter_by(tipo_usuario=1).all()
 
 @user_ns.route("/<int:id>")
 class userOperations(Resource):

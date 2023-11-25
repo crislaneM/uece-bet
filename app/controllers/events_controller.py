@@ -16,7 +16,7 @@ class admEvent(Resource):
             novo_evento = Eventos(
                 id_adm=user_data['id_adm'],
                 time_1=user_data['time_1'],
-                time_2=user_data['time_1'],
+                time_2=user_data['time_2'],
                 odd_time1=user_data['odd_time1'],
                 odd_time2=user_data['odd_time2'],
                 odd_empate=user_data['odd_empate'],
@@ -51,3 +51,15 @@ class eventOperation(Resource):
 
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
+        
+@events_ns.route("/<int:id>")
+class listEvents(Resource):
+    @events_ns.marshal_list_with(list_event)
+    def get(self, id):
+        return Eventos.query.filter_by(id=id).first()
+
+@events_ns.route("/todoseventos")
+class listAllEvents(Resource):
+    @events_ns.marshal_list_with(list_event)
+    def get(self):
+        return Eventos.query.all()
