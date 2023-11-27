@@ -26,3 +26,8 @@ login_users= api.model('Login de todos usuários',{
     'email': fields.String(required=True),
     'senha': fields.String(required=True)
 })
+
+user_login_model= api.model('Informação do usuario',{
+    'id':fields.Integer,
+    'tipo_usuario':fields.Integer,
+})

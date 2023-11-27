@@ -118,7 +118,7 @@ class createLogin(Resource):
 @user_ns.route('/protegido')
 class createProtected(Resource):
 
-    @user_ns.marshal_with(user_model)
+    @user_ns.marshal_with(user_login_model)
     @jwt_required()
     def get(self):
         current_user = get_jwt_identity()
