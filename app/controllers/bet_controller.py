@@ -48,7 +48,7 @@ class userApostar(Resource):
                 db.session.commit()
                 return {"status": "success", "mensagem": "Usuário criado com sucesso"}
             
-            if body['escolha'] == 'empate':
+            if body['resultado_apostado'] == 'empate':
                 nova_aposta = Aposta(
                         id_apostador=user_id,
                         resultado_apostado=body['resultado_apostado'],
