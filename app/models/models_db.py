@@ -30,6 +30,15 @@ class Eventos(db.Model):
     usuario = db.relationship('Usuarios', back_populates='eventos')
     # times = db.relationship('Times', back_populates='eventos')
 
+class Aposta(db.Model):
+    __tablename__ = 'aposta'
+    id = db.Column(db.Integer, primary_key = True)
+    valor_apostado = db.Column(db.Float, nullable = False)
+    resultado_apostado = db.Column(db.String, nullable = False)
+    odd_apostada = db.Column(db.Float, nullable = False)
+    id_apostador = db.Column(db.Integer, nullable = False)
+
+
 # class Times(db.Model):
 #     __tablename__ = 'times'
 #     nome = db.Column(db.String(30), primary_key = True)
