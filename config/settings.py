@@ -4,6 +4,7 @@ from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from config.variables import ConfigBancoDados
+from flask_cors import CORS
 
 user = ConfigBancoDados.user_db
 password = ConfigBancoDados.password_db
@@ -22,3 +23,9 @@ jwt = JWTManager(app)
 jwt.init_app(app)
 
 db = SQLAlchemy(app)
+
+CORS(app)  # Isso habilita o CORS para todas as rotas da sua aplicação
+
+
+if __name__ == '__main__':
+    app.run()
