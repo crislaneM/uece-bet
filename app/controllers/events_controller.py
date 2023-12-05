@@ -35,17 +35,18 @@ class admEvent(Resource):
                     odd_time2=user_data['odd_time2'],
                     odd_empate=user_data['odd_empate'],
                     data=user_data['data'],
-                    descricao=user_data['descricao'])
+                    descricao=user_data['descricao'],
+                    evento_status = True )
 
                 db.session.add(novo_evento)
                 db.session.commit()
 
-                return {"status": "success", "mensagem": "Usuário criado com sucesso"}, 201
+                return {"status": "success", "mensagem": "Evento criado com sucesso"}, 201
             
             return {"ERRO": "Permissão negada: O usuário não é administrador"},403
 
         except Exception as e:
-            return {"status": "error", "mensagem": f"Erro ao cadastrar usuário: {str(e)}"}, 500
+            return {"status": "error", "mensagem": f"Erro ao cadastrar evento: {str(e)}"}, 500
         
 @events_ns.route("/atualizar/<int:evento_id>")
 class eventOperation(Resource):

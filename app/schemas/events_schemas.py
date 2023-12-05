@@ -9,7 +9,8 @@ create_event = api.model('Criar Evento', {
     'odd_time2': fields.Float(required=True, description='Odd 2'),
     'odd_empate': fields.Float(required=True, description='Odd Empate'),
     'data': fields.Date(required=True, description='Data'),
-    'descricao': fields.String(required=True, description='Descricao')
+    'descricao': fields.String(required=True, description='Descricao'),
+    'evento_status': fields.Boolean(required = True, description ='Evento acontecendo')
 })
 
 update_event = api.model('Atualizar evento', {
