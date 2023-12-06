@@ -1,7 +1,7 @@
 Fazer endpoints:
     
     Prioritário:
-        deixar dinheiro off da carteira (pelo endpoint de realizar aposta)
+        deixar dinheiro off da carteira (pelo endpoint de realizar aposta) 
         finalizar evento
         atualizar saldos
 
