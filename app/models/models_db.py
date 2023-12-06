@@ -38,6 +38,7 @@ class Aposta(db.Model):
     resultado_apostado = db.Column(db.String, nullable = False)
     odd_apostada = db.Column(db.Float, nullable = False)
     id_apostador = db.Column(db.Integer, nullable = False)
+    id_evento = db.Column(db.Integer, nullable = False)
 
 
 # class Times(db.Model):
