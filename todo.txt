@@ -1,10 +1,13 @@
 Fazer endpoints:
     
     Prioritário:
+        adicionar a modalidade na tabela
+        filtro de eventos por modalidade
         deixar dinheiro off da carteira (pelo endpoint de realizar aposta) 
         finalizar evento
         atualizar saldos
 
     depositar
     sacar
+    evento prioritário
     
