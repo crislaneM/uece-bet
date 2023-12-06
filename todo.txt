@@ -1,6 +1,7 @@
 Fazer endpoints:
     
     Prioritário:
+        criar endpoint para retornar usuario auth
         adicionar a modalidade na tabela
         filtro de eventos por modalidade
         deixar dinheiro off da carteira (pelo endpoint de realizar aposta) 
@@ -10,4 +11,7 @@ Fazer endpoints:
     depositar
     sacar
     evento prioritário
+
+Front:
+    passando cadastro senhas diferentes
     
