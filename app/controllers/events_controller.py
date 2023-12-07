@@ -95,13 +95,11 @@ class eventShutDown(Resource):
     def put(self, evento_id):
         verificar_permissao_admin(user_nao_adm)
         try:
-            body = events_ns.payload
             event_obj = Eventos.query.filter_by(id=evento_id).first()
-            if ('status_evento' in body): event_obj.descricao = body['status_evento']
+            event_obj.evento_status = False
             db.session.commit()
             response_data = {
-                "msg": "Evento atualizado com sucesso.",
-                "atualizações": events_ns.marshal(event_obj, update_event)
+                "msg": "Evento encerrado com sucesso."
             }
             return response_data, 201
         except Exception as e:

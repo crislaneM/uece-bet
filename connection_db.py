@@ -2,6 +2,7 @@ from config.settings import app, db, api, jwt
 from app.controllers.user_controller import user_ns
 from app.controllers.events_controller import events_ns
 from app.controllers.bet_controller import apostas_ns
+from app.models.models_db import Caixa
 
 class DatabaseManager:
     def __init__(self):
@@ -17,6 +18,10 @@ class DatabaseManager:
         try:
             with self.app.app_context():
                 self.db.create_all()
+                if not Caixa.query.first():
+                    novo_item_caixa = Caixa(saldo_casa=0)
+                    self.db.session.add(novo_item_caixa)
+                    self.db.session.commit()
             print("Tabelas criadas com sucesso.")
         except Exception as e:
             print(f"Erro ao criar tabelas: {str(e)}")

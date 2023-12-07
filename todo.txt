@@ -1,11 +1,12 @@
 Fazer endpoints:
     
     Prioritário:
-        criar endpoint para retornar usuario auth (FEITO)
+        *criar evento nao esta aceitando odd float* (back ou front?)
+        criar endpoint para retornar usuario auth (FEITO) -> USANDO JWT!!!
         depositar
         deixar dinheiro off da carteira (pelo endpoint de realizar aposta) (FEITO)
         finalizar evento (FEITO)
-        atualizar saldos
+        atualizar saldos (FAZENDO)
         sacar
     adicionar a modalidade na tabela
     filtro de eventos por modalidade
