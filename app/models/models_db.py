@@ -27,6 +27,8 @@ class Eventos(db.Model):
     descricao = db.Column(db.Text)
     id_adm = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     evento_status= db.Column(db.Boolean, nullable = False)
+    resultado_evento = db.Column(db.String)
+    modalidade_evento = db.Column(db.String)
     #relacao
     usuario = db.relationship('Usuarios', back_populates='eventos')
     # times = db.relationship('Times', back_populates='eventos')

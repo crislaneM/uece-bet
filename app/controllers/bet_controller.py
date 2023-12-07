@@ -23,7 +23,7 @@ class userApostar(Resource):
             caixa = Caixa.query.filter_by(id = 1).first()
             
             if Aposta.query.filter_by(id_evento=evento_id, id_apostador=user_id).first():
-                return {"ERRO": f"A aposta já existe{Aposta.query.filter_by(id_evento=evento_id, id_apostador=user_id).first()}"}, 400
+                return {"ERRO": "A aposta já existe"}, 400
             
             if body['valor_apostado'] > (usuario.saldo):
                 return{"ERRO": "Saldo insuficiente"}, 400
