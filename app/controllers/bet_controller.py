@@ -20,9 +20,7 @@ class userApostar(Resource):
             user_id = get_jwt_identity()
             evento = Eventos.query.filter_by(id=evento_id).first()
             usuario = Usuarios.query.filter_by(id=user_id).first()
-            # odd_time_1 = evento.odd_time_1
-            # odd_time_2 = evento.odd_time_2
-            # odd_empate = evento.odd_empate
+            caixa = Caixa.query.filter_by(id = 1).first()
             
             if Aposta.query.filter_by(id_evento=evento_id, id_apostador=user_id).first():
                 return {"ERRO": "A aposta já existe"}, 400
@@ -39,6 +37,7 @@ class userApostar(Resource):
                     valor_apostado=body['valor_apostado'])
                 
                 usuario.saldo-=body['valor_apostado']
+                caixa.saldo_casa+=body['valor_apostado']
                 db.session.add(nova_aposta)
                 db.session.commit()
                 return {"status": "success", "mensagem": "Usuário criado com sucesso"}
@@ -52,6 +51,7 @@ class userApostar(Resource):
                     valor_apostado=body['valor_apostado'])
 
                 usuario.saldo-=body['valor_apostado']
+                caixa.saldo_casa+=body['valor_apostado']
                 db.session.add(nova_aposta)
                 db.session.commit()
                 return {"status": "success", "mensagem": "Usuário criado com sucesso"}
@@ -65,11 +65,14 @@ class userApostar(Resource):
                     valor_apostado=body['valor_apostado'])
 
                 usuario.saldo-=body['valor_apostado']
+                caixa.saldo_casa+=body['valor_apostado']
                 db.session.add(nova_aposta)
                 db.session.commit()    
                 return {"status": "success", "mensagem": "Usuário criado com sucesso"}
             
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao criar aposta: {str(e)}"}, 500
+ 
+
             
 

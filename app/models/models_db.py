@@ -40,6 +40,12 @@ class Aposta(db.Model):
     id_apostador = db.Column(db.Integer, nullable = False)
     id_evento = db.Column(db.Integer, nullable = False)
 
+class Caixa(db.Model):
+    __tablename__ = 'caixa'
+    id = db.Column(db.Integer, primary_key = True)
+    saldo_casa = db.Column(db.Float, default = 0)
+
+
 
 # class Times(db.Model):
 #     __tablename__ = 'times'
