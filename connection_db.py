@@ -2,6 +2,7 @@ from config.settings import app, db, api, jwt
 from app.controllers.user_controller import user_ns
 from app.controllers.events_controller import events_ns
 from app.controllers.bet_controller import apostas_ns
+from app.controllers.wallet_controller import carteira_ns
 from app.models.models_db import Caixa
 
 class DatabaseManager:
@@ -13,6 +14,7 @@ class DatabaseManager:
         self.api.add_namespace(user_ns, path='/usuario')
         self.api.add_namespace(events_ns, path='/evento')
         self.api.add_namespace(apostas_ns, path='/apostas')
+        self.api.add_namespace(carteira_ns, path='/carteira')
         
     def create_tables(self):
         try:

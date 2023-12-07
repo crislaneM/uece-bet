@@ -73,8 +73,10 @@ class userApostar(Resource):
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao criar aposta: {str(e)}"}, 500
 
-@apostas_ns.route("distruibuir/<int:evento_id>") 
-class dinheirosAposta(Resource):
-    pass
+
+
+# @apostas_ns.route("distruibuir/<int:evento_id>") 
+# class dinheirosAposta(Resource):
+#     pass
             
 
