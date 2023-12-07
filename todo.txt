@@ -6,10 +6,10 @@ Fazer endpoints:
         deixar dinheiro off da carteira (pelo endpoint de realizar aposta) (FEITO)
         finalizar evento (FEITO)
         atualizar saldos
-
+        sacar
     adicionar a modalidade na tabela
     filtro de eventos por modalidade
-    sacar
+    
     evento prioritário
 
 Front:
