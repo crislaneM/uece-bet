@@ -81,7 +81,7 @@ class eventOperation(Resource):
             return {"ERRO": "Permissão negada: O usuário não é administrador"},403
     
         except Exception as e:
-            return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
+            return {"status": "error", "mensagem": f"Erro ao atualizar evento: {str(e)}"}, 500
       
 #seleciona um evento só      
 @events_ns.route("/<int:evento_id>")
