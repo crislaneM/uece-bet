@@ -168,3 +168,5 @@ cython_debug/
 /teste.sql
 teste.sql
 config/variables.py
+delete.sh
+populate_users.sh

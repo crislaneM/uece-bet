@@ -1,10 +1,15 @@
 Fazer endpoints:
     
     Prioritário:
-        deixar dinheiro off da carteira (pelo endpoint de realizar aposta)
-        finalizar evento
-        atualizar saldos
-
-    depositar
-    sacar
+        *criar evento nao esta aceitando odd float* (back ou front?)
+        depositar
+        finalizar evento (FAZENDO) -> colocar time vencedor no finalizar evento e na tabela de eventos
+        atualizar saldos (FAZENDO)
+        sacar
+    adicionar a modalidade na tabela
+    filtro de eventos por modalidade
+    
+    evento prioritário
+Front:
+    passando cadastro senhas diferentes
     

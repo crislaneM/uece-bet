@@ -19,47 +19,64 @@ class userApostar(Resource):
             body = apostas_ns.payload
             user_id = get_jwt_identity()
             evento = Eventos.query.filter_by(id=evento_id).first()
-            # odd_time_1 = evento.odd_time_1
-            # odd_time_2 = evento.odd_time_2
-            # odd_empate = evento.odd_empate
-
-            if body['valor_apostado'] > (Usuarios.query.filter_by(id=user_id).first().saldo):
+            usuario = Usuarios.query.filter_by(id=user_id).first()
+            caixa = Caixa.query.filter_by(id = 1).first()
+            
+            if Aposta.query.filter_by(id_evento=evento_id, id_apostador=user_id).first():
+                return {"ERRO": "A aposta já existe"}, 400
+            
+            if body['valor_apostado'] > (usuario.saldo):
                 return{"ERRO": "Saldo insuficiente"}, 400
            
             if body['resultado_apostado'] == evento.time_1:
                 nova_aposta = Aposta(
-                        id_apostador=user_id,
-                        resultado_apostado=evento.time_1,
-                        odd_apostada = evento.odd_time1, 
-                        valor_apostado=body['valor_apostado'])
-
+                    id_evento = evento_id,
+                    id_apostador=user_id,
+                    resultado_apostado=evento.time_1,
+                    odd_apostada = evento.odd_time1, 
+                    valor_apostado=body['valor_apostado'])
+                
+                usuario.saldo-=body['valor_apostado']
+                caixa.saldo_casa+=body['valor_apostado']
                 db.session.add(nova_aposta)
                 db.session.commit()
                 return {"status": "success", "mensagem": "Usuário criado com sucesso"}
             
             if body['resultado_apostado'] == evento.time_2:
                 nova_aposta = Aposta(
-                        id_apostador=user_id,
-                        resultado_apostado=evento.time_2,
-                        odd_apostada = evento.odd_time2, 
-                        valor_apostado=body['valor_apostado'])
+                    id_evento = evento_id,
+                    id_apostador=user_id,
+                    resultado_apostado=evento.time_2,
+                    odd_apostada = evento.odd_time2, 
+                    valor_apostado=body['valor_apostado'])
 
+                usuario.saldo-=body['valor_apostado']
+                caixa.saldo_casa+=body['valor_apostado']
                 db.session.add(nova_aposta)
                 db.session.commit()
                 return {"status": "success", "mensagem": "Usuário criado com sucesso"}
             
             if body['resultado_apostado'] == 'empate':
                 nova_aposta = Aposta(
-                        id_apostador=user_id,
-                        resultado_apostado=body['resultado_apostado'],
-                        odd_apostada = evento.odd_empate, 
-                        valor_apostado=body['valor_apostado'])
+                    id_evento = evento_id,
+                    id_apostador=user_id,
+                    resultado_apostado=body['resultado_apostado'],
+                    odd_apostada = evento.odd_empate, 
+                    valor_apostado=body['valor_apostado'])
 
+                usuario.saldo-=body['valor_apostado']
+                caixa.saldo_casa+=body['valor_apostado']
                 db.session.add(nova_aposta)
                 db.session.commit()    
                 return {"status": "success", "mensagem": "Usuário criado com sucesso"}
             
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao criar aposta: {str(e)}"}, 500
+
+
+
+# @apostas_ns.route("distruibuir/<int:evento_id>") 
+# class dinheirosAposta(Resource):
+#     pass
             
 
