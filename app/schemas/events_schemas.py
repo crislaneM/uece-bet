@@ -45,5 +45,6 @@ list_event = api.model('Listar Evento', {
 })
 
 shutdown = api.model("Encerrar evento",{
-    "evento_status": fields.Boolean(required = True, default = False)
+    "evento_status": fields.Boolean(required = True, default = False),
+    "resultado_evento": fields.String(required = True)
 })
