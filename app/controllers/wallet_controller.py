@@ -8,17 +8,19 @@ carteira_ns = Namespace("Carteira")
 
 @carteira_ns.route("/sacar/<int:id>")
 class withdraw(Resource):
-    @carteira_ns.marshal_list_with(withdraw_status)
-    def get(self, id):
-        usuario = Usuarios.query.filter_by(id=id).first()
-        saldo_atual = usuario.saldo
-        if not usuario:
-            return {'success': False, 'message': 'Usuário não encontrado'}, 404
+    @carteira_ns.expect(withdraw_status)
+    def post(self, id):
+        withdraw_data = carteira_ns.payload
+        usuario = Usuarios.query.get(id)
+
+        if usuario:
+            valor_saque = withdraw_data['saldo']
+            usuario.saldo -= valor_saque
+            db.session.commit()
+            return {'message': 'Saque bem-sucedido', 'novo_saldo': usuario.saldo}
         
-        if saldo_atual < 100:
-            return {'success': False, 'message': 'Saldo insuficiente para o saque'}, 400
-        
-        db.session.commit()
+        else:
+            return {'message': 'Usuário não encontrado'}, 404
 
 @carteira_ns.route("/depositar/<int:id>")
 class deposit(Resource):
@@ -26,12 +28,12 @@ class deposit(Resource):
     def post(self, id):
         deposit_data = carteira_ns.payload
         usuario = Usuarios.query.get(id)
-        
+
         if usuario:
-            valor_deposito = deposit_data['saldo']
+            valor_deposito = deposit_data['deposito']
             usuario.saldo += valor_deposito
             db.session.commit()
-
             return {'message': 'Depósito bem-sucedido', 'novo_saldo': usuario.saldo}
+        
         else:
             return {'message': 'Usuário não encontrado'}, 404
