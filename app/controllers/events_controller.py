@@ -87,7 +87,7 @@ class listAllEvents(Resource):
     def get(self):
         return Eventos.query.all()
 
-#FAZENDO
+#pode ter duas abordagens: enviar o nome do time logo ou se é time_1, empate ou time_2. Ou pegar o nome dos times da tabela evento (como está sendo feito)
 @events_ns.route("/encerrar/<int:evento_id>")
 class eventShutDown(Resource):
     @events_ns.expect(shutdown)
@@ -95,12 +95,22 @@ class eventShutDown(Resource):
     def put(self, evento_id):
         verificar_permissao_admin(user_nao_adm)
         try:
+            body = events_ns.payload
             event_obj = Eventos.query.filter_by(id=evento_id).first()
+            if(event_obj.evento_status == False):
+                return {"ERRO": "evento já foi encerrado"}, 403
             event_obj.evento_status = False
+            #if('resultado_evento' in body): event_obj.resultado_evento = body['resultado_evento']
+            if body['resultado_evento'] == 'time_1': 
+                event_obj.resultado_evento = event_obj.time_1
+            elif body['resultado_evento'] == 'time_2':
+                event_obj.resultado_evento = event_obj.time_2
+            else:
+                event_obj.resultado_evento = 'empate'
             db.session.commit()
             response_data = {
                 "msg": "Evento encerrado com sucesso."
             }
             return response_data, 201
         except Exception as e:
-            return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
+            return {"status": "error", "mensagem": f"Erro ao encerrar evento: {str(e)}"}, 500
