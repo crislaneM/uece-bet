@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.models_db import *
 from app.schemas.user_schemas import *
 
-user_ns = Namespace("Usuários")
+user_ns = Namespace("Usuarios")
 event_ns = Namespace("Eventos")
 @user_ns.route("/cadastrar")
 class userRegister(Resource):
