@@ -1,15 +1,12 @@
-from flask import Response,jsonify, request
 from flask_restx import Resource, Namespace
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.models.user import *
-from app.schemas.user_schemas import user_register_model, user_model, adm_model, update_pwd_user, login_users
-
-import json
+from app.models.models_db import *
+from app.schemas.user_schemas import *
 
 user_ns = Namespace("Usuários")
-
-@user_ns.route("/registro")
+event_ns = Namespace("Eventos")
+@user_ns.route("/cadastrar")
 class userRegister(Resource):
 
     @user_ns.doc(responses={201: 'Recurso criado com sucesso', 400: 'Erro nos dados de entrada'})
@@ -48,14 +45,14 @@ class allUserGumbler(Resource):
 
     @user_ns.marshal_list_with(user_model)
     def get(self):
-        return Usuarios.query.filter_by(tipo_usuario=0).first()
+        return Usuarios.query.filter_by(tipo_usuario=0).all()
 
 @user_ns.route("/adm/todosusuarios")
 class allUserAdm(Resource):
 
-    @user_ns.marshal_list_with(adm_model)
+    @user_ns.marshal_list_with(user_model)
     def get(self):
-        return Usuarios.query.filter_by(tipo_usuario=1).first()
+        return Usuarios.query.filter_by(tipo_usuario=1).all()
 
 @user_ns.route("/<int:id>")
 class userOperations(Resource):
@@ -89,54 +86,40 @@ class userOperations(Resource):
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao atualizar usuário: {str(e)}"}, 500
         
-# @user_ns.route('/login')
-# class createLogin(Resource):
+@user_ns.route('/login')
+class createLogin(Resource):
     
-#     @user_ns.expect(login_users, validate=True)
-#     def post(self):
+    @user_ns.expect(login_users, validate=True)
+    def post(self):
 
-#         body_login = user_ns.payload
+        body_login = user_ns.payload
 
-#         user = Usuarios.query.filter_by(email=body_login['email']).first()
-#         user_adm = Usuario_adm.query.filter_by(email=body_login['email']).first()
+        user = Usuarios.query.filter_by(email=body_login['email']).first()
         
-#         if user != None:
+        if user != None:
         
-#             check_password = check_password_hash(user.senha, body_login['senha'])
+            check_password = check_password_hash(user.senha, body_login['senha'])
                 
-#             if user.email and check_password:
-#                 access_token = create_access_token(identity=user.id)
-#                 refresh_token = create_refresh_token(identity=user.id)
+            if user.email and check_password:
+                access_token = create_access_token(identity=user.id)
+                refresh_token = create_refresh_token(identity=user.id)
 
-#                 return  {   
-#                             "message" : "Logged In",
-#                             "tokens":{
-#                                 "access": access_token,
-#                                 "refresh": refresh_token
-#                         }    
-#                     },200  
-            
-#         elif user_adm != None: 
-
-#             if user_adm.senha != body_login['senha']:
-#                 return {"error": "Email e senha inválidos"}
-            
-#             check_password = user_adm.senha    
-
-#             if user_adm.email and check_password:
-#                 access_token = create_access_token(identity=user_adm.id)
-#                 refresh_token = create_refresh_token(identity=user_adm.id)
-
-#                 return  {   
-#                             "message" : "Logged In",
-#                             "tokens":{
-#                                 "access": access_token,
-#                                 "refresh": refresh_token
-#                         }    
-#                     },200    
+                return  {   
+                            "message" : "Logged In",
+                            "tokens":{
+                                "access": access_token,
+                                "refresh": refresh_token
+                        }    
+                    },200    
         
-#         return {"error": "Email e senha inválidos"}
+        return {"error": "Email e senha inválidos"}
 
+@user_ns.route('/protegido')
+class createProtected(Resource):
 
-        
+    @user_ns.marshal_with(user_login_model)
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt_identity()
 
+        return Usuarios.query.filter_by(id=current_user).first()

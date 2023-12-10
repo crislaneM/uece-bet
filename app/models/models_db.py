@@ -23,10 +23,31 @@ class Eventos(db.Model):
     odd_time1 = db.Column(db.Float, nullable=False)
     odd_time2 = db.Column(db.Float, nullable=False)
     odd_empate = db.Column(db.Float, nullable=False)
+    data = db.Column(db.DateTime, nullable=False)
+    descricao = db.Column(db.Text)
     id_adm = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    evento_status= db.Column(db.Boolean, nullable = False)
+    resultado_evento = db.Column(db.String)
+    modalidade_evento = db.Column(db.String)
     #relacao
     usuario = db.relationship('Usuarios', back_populates='eventos')
     # times = db.relationship('Times', back_populates='eventos')
+
+class Aposta(db.Model):
+    __tablename__ = 'aposta'
+    id = db.Column(db.Integer, primary_key = True)
+    valor_apostado = db.Column(db.Float, nullable = False)
+    resultado_apostado = db.Column(db.String, nullable = False)
+    odd_apostada = db.Column(db.Float, nullable = False)
+    id_apostador = db.Column(db.Integer, nullable = False)
+    id_evento = db.Column(db.Integer, nullable = False)
+
+class Caixa(db.Model):
+    __tablename__ = 'caixa'
+    id = db.Column(db.Integer, primary_key = True)
+    saldo_casa = db.Column(db.Float, default = 0)
+
+
 
 # class Times(db.Model):
 #     __tablename__ = 'times'
