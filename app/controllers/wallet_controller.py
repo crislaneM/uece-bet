@@ -19,3 +19,19 @@ class withdraw(Resource):
             return {'success': False, 'message': 'Saldo insuficiente para o saque'}, 400
         
         db.session.commit()
+
+@carteira_ns.route("/depositar/<int:id>")
+class deposit(Resource):
+    @carteira_ns.expect(deposit_status)
+    def post(self, id):
+        deposit_data = carteira_ns.payload
+        usuario = Usuarios.query.get(id)
+        
+        if usuario:
+            valor_deposito = deposit_data['saldo']
+            usuario.saldo += valor_deposito
+            db.session.commit()
+
+            return {'message': 'Depósito bem-sucedido', 'novo_saldo': usuario.saldo}
+        else:
+            return {'message': 'Usuário não encontrado'}, 404
