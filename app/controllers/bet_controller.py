@@ -2,13 +2,10 @@ from app.models.models_db import *
 from app.schemas.bets_schemas import *
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from app.controllers.helper import verificar_permissao_admin
 
 apostas_ns = Namespace("Apostas")
 
-#nao esta descontando do saldo ao apostar (vai ser assim mesmo?)
-#user_id pegando pelo jwt identity
-#os dados sobre o time selecionado serão passados assim?
-#terá algum campo para mostrar os possíveis lucro nesse momento ou em outro endpoint?
 @apostas_ns.route("/apostar/<int:evento_id>")
 class userApostar(Resource):
     @apostas_ns.doc(responses={201: 'Aposta realizada com sucesso', 400: 'Erro nos dados de entrada'})
@@ -68,15 +65,21 @@ class userApostar(Resource):
                 caixa.saldo_casa+=body['valor_apostado']
                 db.session.add(nova_aposta)
                 db.session.commit()    
-                return {"status": "success", "mensagem": "Usuário criado com sucesso"}
+                return {"status": "success", "mensagem": "Aposta realizada com sucesso"}
             
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao criar aposta: {str(e)}"}, 500
 
-
-
-# @apostas_ns.route("distruibuir/<int:evento_id>") 
+# @apostas_ns.route("distruibuir/") 
 # class dinheirosAposta(Resource):
-#     pass
+#     def post(self):
+#         print(verificar_permissao_admin())
+#         # try:
+           
+#         # except Exception as e:
+#         #     return {"status": "error", "mensagem": f"Erro ao encerrar evento: {str(e)}"}, 500
+
+
+#         return True
             
 

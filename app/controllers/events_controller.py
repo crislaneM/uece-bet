@@ -3,15 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import abort
 from app.models.models_db import *
 from app.schemas.events_schemas import *
-
-def verificar_permissao_admin(error):
-    user_id = get_jwt_identity()
-    user = Usuarios.query.get(user_id)
-    if user.tipo_usuario == 0:
-        abort(403, {"ERRO": f'{error}'})
-
-#msg de erro para user nao adm
-user_nao_adm = "Permissão negada: O usuário não é administrador"
+from app.controllers.helper import verificar_permissao_admin
 
 events_ns = Namespace("Eventos")
 
@@ -22,7 +14,7 @@ class admEvent(Resource):
     @events_ns.expect(create_event, validate=True)
     @jwt_required()
     def post(self):
-        verificar_permissao_admin(user_nao_adm)
+        verificar_permissao_admin()
         user_id = get_jwt_identity()
         try:
             user_data = events_ns.payload
@@ -51,7 +43,7 @@ class eventOperation(Resource):
     @events_ns.expect(update_event)
     @jwt_required()
     def put(self, evento_id):
-        verificar_permissao_admin(user_nao_adm)
+        verificar_permissao_admin()
         try:
             body = events_ns.payload
             user_admin = Eventos.query.filter_by(id=evento_id).first()
@@ -93,24 +85,44 @@ class eventShutDown(Resource):
     @events_ns.expect(shutdown)
     @jwt_required()
     def put(self, evento_id):
-        verificar_permissao_admin(user_nao_adm)
+        verificar_permissao_admin()
         try:
             body = events_ns.payload
             event_obj = Eventos.query.filter_by(id=evento_id).first()
-            if(event_obj.evento_status == False):
-                return {"ERRO": "evento já foi encerrado"}, 403
+            
+            # if(event_obj.evento_status == False):
+            #     return {"ERRO": "evento já foi encerrado"}, 403
             event_obj.evento_status = False
-            #if('resultado_evento' in body): event_obj.resultado_evento = body['resultado_evento']
+
+            #if('resultado_evento' in body): event_obj.resultado_evento = body['resultado_evento']   
             if body['resultado_evento'] == 'time_1': 
                 event_obj.resultado_evento = event_obj.time_1
             elif body['resultado_evento'] == 'time_2':
                 event_obj.resultado_evento = event_obj.time_2
             else:
                 event_obj.resultado_evento = 'empate'
+
             db.session.commit()
+            # apos finalizar o evento
+            # input o time que ganhou e distribui para os usuarios que apostaram naquele time
+            # quais usuarios apostaram nesse evento? e no time que ganhou
+            # 
+
+            apost_obj = Aposta.query.filter_by(id_evento=evento_id).all()
+            
+
+            for apost_obj.resultado_apostado in event_obj.resultado_evento:
+
+                print('oi')
+
+                usuarios = Usuarios.query.filter_by(id=apost_obj.id_apostador).all()
+
+                print(usuarios)
+
+            
             response_data = {
                 "msg": "Evento encerrado com sucesso."
             }
-            return response_data, 201
+            return True, 201
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao encerrar evento: {str(e)}"}, 500
