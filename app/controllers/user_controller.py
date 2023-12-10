@@ -114,12 +114,7 @@ class createLogin(Resource):
         
         return {"error": "Email e senha inválidos"}
 
-@user_ns.route('/protegido')
+@user_ns.route('/protegido/<int:sub>')
 class createProtected(Resource):
-
-    @user_ns.marshal_with(user_login_model)
-    @jwt_required()
-    def get(self):
-        current_user = get_jwt_identity()
-
-        return Usuarios.query.filter_by(id=current_user).first()
+    def get(self, sub):
+        return Usuarios.query.filter_by(id=sub).first()

@@ -107,17 +107,9 @@ class eventShutDown(Resource):
             # input o time que ganhou e distribui para os usuarios que apostaram naquele time
             # quais usuarios apostaram nesse evento? e no time que ganhou
             # 
-
+            print("aaa")
             apost_obj = Aposta.query.filter_by(id_evento=evento_id).all()
             
-
-            for apost_obj.resultado_apostado in event_obj.resultado_evento:
-
-                print('oi')
-
-                usuarios = Usuarios.query.filter_by(id=apost_obj.id_apostador).all()
-
-                print(usuarios)
 
             
             response_data = {
