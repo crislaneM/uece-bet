@@ -117,4 +117,6 @@ class createLogin(Resource):
 @user_ns.route('/protegido/<int:sub>')
 class createProtected(Resource):
     def get(self, sub):
-        return Usuarios.query.filter_by(id=sub).first()
+        user = Usuarios.query.filter_by(id=sub).first()
+        return  { "saldo": f'{user.saldo}',
+                 "tipo_usuario": f'{user.tipo_usuario}'}
