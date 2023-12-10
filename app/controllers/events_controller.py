@@ -122,9 +122,7 @@ class eventShutDown(Resource):
                     for user in usuarios:
                         user_aposta = Aposta.query.filter_by(id_apostador=user.id).first()
                         # print(user.id, user_aposta.valor_apostado)
-                        # user_saldo = user.saldo
-                        # caixa_saldo = caixa.saldo_caixa
-
+                    
                         user.saldo += float(user_aposta.valor_apostado + ((user_aposta.odd_apostada * user_aposta.valor_apostado) - 1))
                         # caixa_saldo -= user_saldo
 
