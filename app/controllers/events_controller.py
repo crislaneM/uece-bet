@@ -106,23 +106,33 @@ class eventShutDown(Resource):
             # apos finalizar o evento
             # input o time que ganhou e distribui para os usuarios que apostaram naquele time
             # quais usuarios apostaram nesse evento? e no time que ganhou
-            # 
-
+ 
             apost_obj = Aposta.query.filter_by(id_evento=evento_id).all()
-            
 
-            for apost_obj.resultado_apostado in event_obj.resultado_evento:
+            if apost_obj:
+                
+                resultado_apostado = apost_obj[0].resultado_apostado
 
-                print('oi')
+                usuarios = Usuarios.query.filter(Usuarios.id == Aposta.id_apostador, Aposta.resultado_apostado == resultado_apostado).all()
 
-                usuarios = Usuarios.query.filter_by(id=apost_obj.id_apostador).all()
+                caixa = Caixa.query.filter_by(id=1).first()
 
-                print(usuarios)
+                if usuarios:
 
-            
+                    for user in usuarios:
+                        user_aposta = Aposta.query.filter_by(id_apostador=user.id).first()
+                        # print(user.id, user_aposta.valor_apostado)
+                        # user_saldo = user.saldo
+                        # caixa_saldo = caixa.saldo_caixa
+
+                        user.saldo += float(user_aposta.valor_apostado + ((user_aposta.odd_apostada * user_aposta.valor_apostado) - 1))
+                        # caixa_saldo -= user_saldo
+
+
+            db.session.commit()
             response_data = {
                 "msg": "Evento encerrado com sucesso."
             }
-            return True, 201
+            return response_data, 201
         except Exception as e:
             return {"status": "error", "mensagem": f"Erro ao encerrar evento: {str(e)}"}, 500

@@ -114,7 +114,7 @@ class createLogin(Resource):
         
         return {"error": "Email e senha inválidos"}
 
-@user_ns.route('/protegido')
+@user_ns.route('/protegido/')
 class createProtected(Resource):
 
     @user_ns.marshal_with(user_login_model)
