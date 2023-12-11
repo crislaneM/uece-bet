@@ -70,7 +70,7 @@ class withdraw2(Resource):
 class saldo(Resource):
     def get(self):
         saldo = Caixa.query.filter_by(id=1).first()
-        return{"saldo": "f{saldo.saldo_casa}"}  
+        return{"saldo": {saldo.saldo_casa}}  
 
 @carteira_ns.route("/ver_saldo_user/<int:id>")
 class deposit(Resource):
