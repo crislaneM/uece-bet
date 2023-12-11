@@ -65,5 +65,19 @@ class withdraw2(Resource):
         caixa.saldo_casa -= valor_saque
         db.session.commit()
         return {'message': 'Saque bem-sucedido', 'novo_saldo': caixa.saldo_casa}
-    
-    
+
+@carteira_ns.route("/ver_saldo/adm")
+class saldo(Resource):
+    def get(self):
+        saldo = Caixa.query.filter_by(id=1).first()
+        return{"saldo": "f{saldo.saldo_casa}"}  
+
+@carteira_ns.route("/ver_saldo_user/<int:id>")
+class deposit(Resource):
+    @carteira_ns.expect(deposit_status)
+    def get(self, id):
+        usuario = Usuarios.query.get(id)
+        if usuario:
+            return {'saldo': usuario.saldo}
+        else:
+            return {'message': 'Usuário não encontrado'}, 404

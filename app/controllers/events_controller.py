@@ -79,7 +79,6 @@ class listAllEvents(Resource):
     def get(self):
         return Eventos.query.all()
 
-#pode ter duas abordagens: enviar o nome do time logo ou se é time_1, empate ou time_2. Ou pegar o nome dos times da tabela evento (como está sendo feito)
 @events_ns.route("/encerrar/<int:evento_id>")
 class eventShutDown(Resource):
     @events_ns.expect(shutdown)
@@ -90,10 +89,9 @@ class eventShutDown(Resource):
             body = events_ns.payload
             event_obj = Eventos.query.filter_by(id=evento_id).first()
             caixa = Caixa.query.filter_by(id=1).first()
-            # if(event_obj.evento_status == False):
-            #     return {"ERRO": "evento já foi encerrado"}, 403
+            if(event_obj.evento_status == False):
+                return {"ERRO": "evento já foi encerrado"}, 403
             event_obj.evento_status = False
-            #if('resultado_evento' in body): event_obj.resultado_evento = body['resultado_evento']   
             if body['resultado_evento'] == 'time_1': 
                 event_obj.resultado_evento = event_obj.time_1
             elif body['resultado_evento'] == 'time_2':
@@ -101,9 +99,6 @@ class eventShutDown(Resource):
             else:
                 event_obj.resultado_evento = 'empate'
             db.session.commit()
-            # apos finalizar o evento
-            # input o time que ganhou e distribui para os usuarios que apostaram naquele time
-            # quais usuarios apostaram nesse evento? e no time que ganhou
 
             apost_obj = Aposta.query.filter_by(id_evento=evento_id, resultado_apostado = event_obj.resultado_evento).all()
             if apost_obj:
