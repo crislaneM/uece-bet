@@ -8,3 +8,6 @@ withdraw_status = api.model("Sacar", {
 deposit_status = api.model("Depositar", {
     "deposito": fields.Float(required = True)
     })
+deposit_adm = api.model("Depositar2", {
+    "deposito2": fields.Float(required = True)
+    })

@@ -41,12 +41,12 @@ class deposit(Resource):
         
 @carteira_ns.route("/depositar/adm")
 class deposit2(Resource):
-    @carteira_ns.expect(deposit_status)
+    @carteira_ns.expect(deposit_adm)
     def post(self):
         #verificar_permissao_admin()
         caixa = Caixa.query.filter_by(id=1).first()
         deposit_data = carteira_ns.payload
-        valor_deposito = deposit_data['deposito']
+        valor_deposito = deposit_data['deposito2']
         caixa.saldo_casa += valor_deposito
         db.session.commit()
         return {'message': 'Depósito bem-sucedido', 'novo_saldo': caixa.saldo_casa}
