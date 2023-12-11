@@ -89,11 +89,10 @@ class eventShutDown(Resource):
         try:
             body = events_ns.payload
             event_obj = Eventos.query.filter_by(id=evento_id).first()
-            
+            caixa = Caixa.query.filter_by(id=1).first()
             # if(event_obj.evento_status == False):
             #     return {"ERRO": "evento já foi encerrado"}, 403
             event_obj.evento_status = False
-
             #if('resultado_evento' in body): event_obj.resultado_evento = body['resultado_evento']   
             if body['resultado_evento'] == 'time_1': 
                 event_obj.resultado_evento = event_obj.time_1
@@ -101,31 +100,19 @@ class eventShutDown(Resource):
                 event_obj.resultado_evento = event_obj.time_2
             else:
                 event_obj.resultado_evento = 'empate'
-
             db.session.commit()
             # apos finalizar o evento
             # input o time que ganhou e distribui para os usuarios que apostaram naquele time
             # quais usuarios apostaram nesse evento? e no time que ganhou
- 
-            apost_obj = Aposta.query.filter_by(id_evento=evento_id).all()
 
+            apost_obj = Aposta.query.filter_by(id_evento=evento_id, resultado_apostado = event_obj.resultado_evento).all()
             if apost_obj:
-                
-                resultado_apostado = apost_obj[0].resultado_apostado
-
-                usuarios = Usuarios.query.filter(Usuarios.id == Aposta.id_apostador, Aposta.resultado_apostado == resultado_apostado).all()
-
-                caixa = Caixa.query.filter_by(id=1).first()
-
-                if usuarios:
-
-                    for user in usuarios:
-                        user_aposta = Aposta.query.filter_by(id_apostador=user.id).first()
-                        # print(user.id, user_aposta.valor_apostado)
-                    
-                        user.saldo += float(user_aposta.valor_apostado + ((user_aposta.odd_apostada * user_aposta.valor_apostado) - 1))
-                        # caixa_saldo -= user_saldo
-
+                for aposta in apost_obj:
+                    print(aposta)
+                    usuario = Usuarios.query.filter_by(id = aposta.id_apostador).first()
+                    ganhos = (((aposta.odd_apostada-1) * aposta.valor_apostado) + aposta.valor_apostado)
+                    usuario.saldo+=ganhos
+                    caixa.saldo_casa -= ganhos
 
             db.session.commit()
             response_data = {
