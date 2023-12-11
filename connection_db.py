@@ -21,7 +21,7 @@ class DatabaseManager:
             with self.app.app_context():
                 self.db.create_all()
                 if not Caixa.query.first():
-                    novo_item_caixa = Caixa(saldo_casa=0)
+                    novo_item_caixa = Caixa(saldo_casa=100000)
                     self.db.session.add(novo_item_caixa)
                     self.db.session.commit()
             print("Tabelas criadas com sucesso.")
