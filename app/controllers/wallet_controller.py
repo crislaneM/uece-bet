@@ -40,7 +40,7 @@ class deposit(Resource):
             return {'message': 'Usuário não encontrado'}, 404
         
 @carteira_ns.route("/depositar/adm")
-class deposit(Resource):
+class deposit2(Resource):
     @carteira_ns.expect(deposit_status)
     @jwt_required()
     def post(self):
@@ -51,4 +51,19 @@ class deposit(Resource):
         caixa.saldo_casa += valor_deposito
         db.session.commit()
         return {'message': 'Depósito bem-sucedido', 'novo_saldo': caixa.saldo_casa}
+
+ 
+@carteira_ns.route("/sacar/adm")
+class withdraw2(Resource):
+    @carteira_ns.expect(withdraw_status)
+    @jwt_required()   
+    def post(self):
+        verificar_permissao_admin()
+        caixa = Caixa.query.filter_by(id=1).first()
+        withdraw_data = carteira_ns.payload
+        valor_saque = withdraw_data['saldo']
+        caixa.saldo_casa -= valor_saque
+        db.session.commit()
+        return {'message': 'Saque bem-sucedido', 'novo_saldo': caixa.saldo_casa}
+    
     
