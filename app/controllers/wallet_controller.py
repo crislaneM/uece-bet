@@ -42,7 +42,6 @@ class deposit(Resource):
 @carteira_ns.route("/depositar/adm")
 class deposit2(Resource):
     @carteira_ns.expect(deposit_status)
-    #@jwt_required()
     def post(self):
         #verificar_permissao_admin()
         caixa = Caixa.query.filter_by(id=1).first()
