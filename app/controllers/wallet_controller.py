@@ -37,3 +37,15 @@ class deposit(Resource):
         
         else:
             return {'message': 'Usuário não encontrado'}, 404
+        
+@carteira_ns.route("/depositar/adm/<int:id>")
+class deposit(Resource):
+    @carteira_ns.expect(deposit_status)
+    def post(self, id):
+        caixa = Caixa.query.filter_by(id=1).first()
+        deposit_data = carteira_ns.payload
+        valor_deposito = deposit_data['deposito']
+        caixa.saldo_casa += valor_deposito
+        db.session.commit()
+        return {'message': 'Depósito bem-sucedido', 'novo_saldo': caixa.saldo_casa}
+    
