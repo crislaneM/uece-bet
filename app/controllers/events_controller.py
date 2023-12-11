@@ -92,9 +92,9 @@ class eventShutDown(Resource):
             if(event_obj.evento_status == False):
                 return {"ERRO": "evento já foi encerrado"}, 403
             event_obj.evento_status = False
-            if body['resultado_evento'] == 'time_1': 
+            if body['resultado_evento'] == event_obj.time_1: 
                 event_obj.resultado_evento = event_obj.time_1
-            elif body['resultado_evento'] == 'time_2':
+            elif body['resultado_evento'] == event_obj.time_2:
                 event_obj.resultado_evento = event_obj.time_2
             else:
                 event_obj.resultado_evento = 'empate'
